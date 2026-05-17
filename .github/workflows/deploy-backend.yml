@@ -25,10 +25,11 @@ jobs:
 
     - name: Build imágenes Backend y push a ECR
       run: |
-        docker build -f ./back-Despachos_SpringBoot/Dockerfile -t back-despachos ./back-Despachos_SpringBoot
+        docker build -f ./back-Despachos_SpringBoot/Dockerfile -t back-despachos ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
         docker tag back-despachos:latest ${{ secrets.ECR_REPO_URL_BACKEND }}:despachos
         docker push ${{ secrets.ECR_REPO_URL_BACKEND }}:despachos
-        docker build -f ./back-Ventas_SpringBoot/Dockerfile -t back-ventas ./back-Ventas_SpringBoot
+        
+        docker build -f ./back-Ventas_SpringBoot/Dockerfile -t back-ventas ./back-Ventas_SpringBoot/Springboot-API-REST
         docker tag back-ventas:latest ${{ secrets.ECR_REPO_URL_BACKEND }}:ventas
         docker push ${{ secrets.ECR_REPO_URL_BACKEND }}:ventas
 
