@@ -16,7 +16,7 @@ services:
     restart: always
 
   back-ventas:
-    # Usa el tag ':ventas' que le asignamos en el pipeline
+    # Usa el tag ':ventas' del pipeline
     image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:ventas
     container_name: back-ventas-container
     ports:

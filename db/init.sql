@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS despacho (
     despachado BIT(1) NOT NULL DEFAULT b'0'
 );
 
--- 3. Insertar datos de prueba sembrados (Seeders)
+-- 3. Insertar datos de prueba
 INSERT INTO venta (direccion_compra, valor_compra, fecha_compra, despacho_generado) VALUES 
 ('Av. Apoquindo 4500, Las Condes', 45000, '2026-05-15', b'1'),
 ('Calle Los Alerces 123, Ñuñoa', 12500, '2026-05-16', b'0'),
