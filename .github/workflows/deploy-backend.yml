@@ -1,0 +1,75 @@
+name: Deploy Backend a AWS
+
+on:
+  push:
+    branches:
+      - deploy  # se ejecuta solo cuando hay cambios en la rama deploy
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    # credenciales de AWS
+    - name: Configurar credenciales de AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1  # region de la cuenta aws
+
+    # iniciar sesión
+    - name: Iniciar sesión en Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    # construir y subir imagen del microservicio Despachos
+    - name: Construir y subir Imagen de Despachos
+      uses: docker/build-push-action@v4
+      with:
+        context: ./back-Despachos_SpringBoot
+        file: ./back-Despachos_SpringBoot/Dockerfile
+        push: true
+        # URL de tu repositorio ECR para despachos
+        tags: ${{ steps.login-ecr.outputs.registry }}/back-despachos:latest
+
+    # construir y subir imagen del microservicio Ventas
+    - name: Construir y subir Imagen de Ventas
+      uses: docker/build-push-action@v4
+      with:
+        context: ./back-Ventas_SpringBoot
+        file: ./back-Ventas_SpringBoot/Dockerfile
+        push: true
+        # URL de tu repositorio ECR para ventas
+        tags: ${{ steps.login-ecr.outputs.registry }}/back-ventas:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    
+    steps:
+    - name: Desplegar en AWS EC2 vía SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.AWS_EC2_HOST }}
+        username: ec2-user  #usuario del SO
+        key: ${{ secrets.AWS_EC2_SSH_KEY }}
+        script: |
+          mkdir -p ~/app-backend
+          cd ~/app-backend
+
+          curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/deploy/docker-compose.yml
+
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          export AWS_DEFAULT_REGION=us-east-1
+
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REGISTRY }}
+
+          docker-compose pull
+          docker-compose up -d
+          
+          docker image prune -f
