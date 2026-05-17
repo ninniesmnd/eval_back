@@ -33,7 +33,7 @@ jobs:
         context: ./back-Despachos_SpringBoot
         file: ./back-Despachos_SpringBoot/Dockerfile
         push: true
-        # URL de tu repositorio ECR para despachos
+        # 
         tags: ${{ steps.login-ecr.outputs.registry }}/back-despachos:latest
 
     # construir y subir imagen del microservicio Ventas
@@ -43,7 +43,7 @@ jobs:
         context: ./back-Ventas_SpringBoot
         file: ./back-Ventas_SpringBoot/Dockerfile
         push: true
-        # URL de tu repositorio ECR para ventas
+        #
         tags: ${{ steps.login-ecr.outputs.registry }}/back-ventas:latest
 
   deploy:
