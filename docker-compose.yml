@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   back-despachos:
-    # IMPORTANTE: Cambia la sintaxis para que use las imágenes que sube el pipeline
+    
     image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:latest
     container_name: back-despachos-container
     ports:
