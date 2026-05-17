@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  back-despachos:
+    # IMPORTANTE: Cambia la sintaxis para que use las imágenes que sube el pipeline
+    image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:latest
+    container_name: back-despachos-container
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_ENDPOINT=tu-rds-endpoint.amazonaws.com
+      - DB_PORT=3306
+      - DB_NAME=nombre_de_tu_bd
+      - DB_USERNAME=tu_usuario_rds
+      - DB_PASSWORD=tu_contraseña_rds
+    restart: always
+
+  back-ventas:
+    # Usa el tag ':ventas' que le asignamos en el pipeline
+    image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:ventas
+    container_name: back-ventas-container
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_ENDPOINT=tu-rds-endpoint.amazonaws.com
+      - DB_PORT=3306
+      - DB_NAME=nombre_de_tu_bd
+      - DB_USERNAME=tu_usuario_rds
+      - DB_PASSWORD=tu_contraseña_rds
+    restart: always
