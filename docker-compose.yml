@@ -1,30 +1,60 @@
 version: '3.8'
 
 services:
+
+  db-evaluacion:
+    image: mysql:8.0.46
+    container_name: db-evaluacion
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bd_evaluacion
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+    networks:
+      - pawville-network
+
   back-despachos:
-    
     image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:latest
     container_name: back-despachos-container
     ports:
       - "8081:8081"
     environment:
-      - DB_ENDPOINT=tu-rds-endpoint.amazonaws.com
+      - DB_ENDPOINT=db-evaluacion
       - DB_PORT=3306
-      - DB_NAME=nombre_de_tu_bd
-      - DB_USERNAME=tu_usuario_rds
-      - DB_PASSWORD=tu_contraseña_rds
+      - DB_NAME=bd_evaluacion
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     restart: always
+    depends_on:
+      - db-evaluacion
+    networks:
+      - pawville-network
 
   back-ventas:
-    # Usa el tag ':ventas' del pipeline
     image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/back-despachos:ventas
     container_name: back-ventas-container
     ports:
       - "8082:8082"
     environment:
-      - DB_ENDPOINT=tu-rds-endpoint.amazonaws.com
+      - DB_ENDPOINT=db-evaluacion
       - DB_PORT=3306
-      - DB_NAME=nombre_de_tu_bd
-      - DB_USERNAME=tu_usuario_rds
-      - DB_PASSWORD=tu_contraseña_rds
+      - DB_NAME=bd_evaluacion
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     restart: always
+    depends_on:
+      - db-evaluacion
+    networks:
+      - pawville-network
+
+networks:
+  pawville-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
