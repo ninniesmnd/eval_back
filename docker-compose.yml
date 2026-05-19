@@ -14,7 +14,7 @@ services:
       - DB_PASSWORD=root
     restart: always
     networks:
-      - pawville-network
+      - eval-network
 
   back-ventas:
     image: 511164404052.dkr.ecr.us-east-1.amazonaws.com/back-despachos:ventas
@@ -29,7 +29,7 @@ services:
       - DB_PASSWORD=root
     restart: always
     networks:
-      - pawville-network
+      - eval-network
 
 networks:
   eval-network:
