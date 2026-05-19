@@ -32,5 +32,5 @@ services:
       - pawville-network
 
 networks:
-  pawville-network:
+  eval-network:
     driver: bridge
