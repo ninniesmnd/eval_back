@@ -36,14 +36,14 @@ jobs:
     - name: Desplegar Backend vía SSM
       run: |
         aws ssm send-command \
-          --instance-ids ${{ secrets.EC2_BACKEND_INSTANCE_ID }} \
-          --document-name "AWS-RunShellScript" \  
+          --instance-ids "${{ secrets.EC2_BACKEND_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
           --comment "Actualizar microservicios de backend con Docker Compose" \
           --parameters '{"commands":[
             "set -e",
-            "aws ecr get-login-password --region '${{ secrets.AWS_REGION }}' | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
+            "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
             "mkdir -p ~/app-backend && cd ~/app-backend",
-            "curl -o docker-compose.yml https://raw.githubusercontent.com/'${{ github.repository }}'/deploy/docker-compose.yml",
+            "curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/deploy/docker-compose.yml",
             "/usr/libexec/docker/cli-plugins/docker-compose pull",
             "/usr/libexec/docker/cli-plugins/docker-compose up -d",
             "docker image prune -f"
