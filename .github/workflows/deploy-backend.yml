@@ -44,8 +44,16 @@ jobs:
             "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
             "mkdir -p ~/app-backend && cd ~/app-backend",
             "curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/deploy/docker-compose.yml",
-            "/usr/libexec/docker/cli-plugins/docker-compose pull",
-            "/usr/libexec/docker/cli-plugins/docker-compose up -d",
+            
+
+            "sudo docker-compose pull",
+            
+
+            "sudo docker-compose down",
+            
+
+            "sudo docker-compose up -d",
+            
             "docker image prune -f"
           ]}' \
           --output text
