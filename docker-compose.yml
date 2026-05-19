@@ -12,6 +12,7 @@ services:
       - DB_NAME=bd_evaluacion
       - DB_USERNAME=root
       - DB_PASSWORD=root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://10.0.5.66:3306/bd_evaluacion?allowPublicKeyRetrieval=true&useSSL=false
     restart: always
     networks:
       - eval-network
@@ -27,6 +28,7 @@ services:
       - DB_NAME=bd_evaluacion
       - DB_USERNAME=root
       - DB_PASSWORD=root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://10.0.5.66:3306/bd_evaluacion?allowPublicKeyRetrieval=true&useSSL=false
     restart: always
     networks:
       - eval-network
