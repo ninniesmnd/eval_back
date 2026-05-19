@@ -1,8 +1,8 @@
--- Asegurar que la base de datos exista y usarla
+-- bd existe
 CREATE DATABASE IF NOT EXISTS bd_evaluacion;
 USE bd_evaluacion;
 
--- 1. Crear tabla para la entidad Venta
+-- venta
 CREATE TABLE IF NOT EXISTS venta (
     id_venta BIGINT AUTO_INCREMENT PRIMARY KEY,
     direccion_compra VARCHAR(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS venta (
     despacho_generado BIT(1) NOT NULL DEFAULT b'0'
 );
 
--- 2. Crear tabla para la entidad Despacho
+-- despacho
 CREATE TABLE IF NOT EXISTS despacho (
     id_despacho BIGINT AUTO_INCREMENT PRIMARY KEY,
     fecha_despacho DATE,
@@ -23,10 +23,15 @@ CREATE TABLE IF NOT EXISTS despacho (
     despachado BIT(1) NOT NULL DEFAULT b'0'
 );
 
--- 3. Insertar datos de prueba
+-- datos de prueba
 INSERT INTO venta (direccion_compra, valor_compra, fecha_compra, despacho_generado) VALUES 
 ('Av. Apoquindo 4500, Las Condes', 45000, '2026-05-15', b'1'),
 ('Calle Los Alerces 123, Ñuñoa', 12500, '2026-05-16', b'0'),
+('Av. Providencia 1234, Santiago', 45900,  '2024-11-03', b'0'),
+('Los Leones 876, Vitacura', 128500, '2024-11-10', b'0'),
+('Gran Avenida 4521, San Miguel', 67300,  '2024-12-01', b'0'),
+('Paseo Las Palmas 310, Las Condes', 89000,  '2025-01-15', b'0'),
+('Camino Lo Barnechea 750, Lo Barnechea', 34200,  '2025-02-20', b'0'),
 ('Pasaje El Sol 89, San Miguel', 89990, '2026-05-17', b'1');
 
 INSERT INTO despacho (fecha_despacho, patente_camion, intento, id_compra, direccion_compra, valor_compra, despachado) VALUES 
