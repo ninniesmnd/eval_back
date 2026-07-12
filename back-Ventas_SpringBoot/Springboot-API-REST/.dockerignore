@@ -18,3 +18,8 @@ Dockerfile*
 # Ignora archivos temporales
 *.swp
 *~
+
+target/
+.git/
+.mvn/
+*.md
