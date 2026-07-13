@@ -4,7 +4,7 @@ metadata:
   name: backend-ventas
   namespace: tienda
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend-ventas
