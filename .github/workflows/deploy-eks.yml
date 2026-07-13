@@ -72,6 +72,12 @@ jobs:
           kubectl apply -f k8s/mysql-deployment.yaml -n $EKS_NAMESPACE
           kubectl apply -f k8s/mysql-service.yaml -n $EKS_NAMESPACE
 
+      - name: Esperar a que MySQL esté listo
+        env:
+          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
+        run: |
+          kubectl rollout status deployment/mysql-db -n $EKS_NAMESPACE
+
       - name: Actualizar BACKEND DESPACHOS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -102,6 +108,20 @@ jobs:
         run: |
           kubectl apply -f k8s/backend-despachos-hpa.yaml -n $EKS_NAMESPACE
           kubectl apply -f k8s/backend-ventas-hpa.yaml -n $EKS_NAMESPACE
+
+      - name: Cargar datos de prueba (solo si la BD está vacía)
+        env:
+          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
+        run: |
+          MYSQL_POD=$(kubectl get pods -n $EKS_NAMESPACE -l app=mysql-db -o jsonpath="{.items[0].metadata.name}")
+          ROW_COUNT=$(kubectl exec -n $EKS_NAMESPACE $MYSQL_POD -- mysql -uroot -padmin123 -N -e "SELECT COUNT(*) FROM appdb.venta;")
+          if [ "$ROW_COUNT" -eq "0" ]; then
+            echo "Base de datos vacía, cargando datos de prueba..."
+            kubectl cp db/init.sql $EKS_NAMESPACE/$MYSQL_POD:/tmp/init.sql
+            kubectl exec -n $EKS_NAMESPACE $MYSQL_POD -- bash -c "mysql -uroot -padmin123 appdb < /tmp/init.sql"
+          else
+            echo "Ya hay datos en la base ($ROW_COUNT filas en venta), se omite la carga."
+          fi
 
       - name: Ver pods y servicios
         env:
